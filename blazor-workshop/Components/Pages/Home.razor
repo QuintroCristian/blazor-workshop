@@ -1,7 +1,56 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Comida Paisa</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="main">
+    <h1>Nuestro Menú Paisa</h1>
+    <ul class="pizza-cards">
+        @if (platos is not null)
+        {
+            @foreach (var plato in platos)
+            {
+                <li style="background-image: url('@plato.ImageUrl')">
+                    <div class="pizza-info">
+                        <span class="title">@plato.Name</span>
+                        @plato.Description
+                        <span class="price">@plato.GetFormattedBasePrice()</span>
+                    </div>
+                </li>
+            }
+        }
+        else
+        {
+            <p>Cargando menú...</p>
+        }
+    </ul>
+</div>
 
-Welcome to your new app.
+@code {
+    private List<PlatoTipico>? platos;
+
+    // Clase para representar un plato típico.
+    public class PlatoTipico
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public decimal BasePrice { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public string ImageUrl { get; set; } = string.Empty;
+        public string GetFormattedBasePrice() => $"${BasePrice:N0}";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(200); // Simula carga de datos
+        platos = new List<PlatoTipico>
+        {
+            new PlatoTipico { Id = 1, Name = "Bandeja Paisa", BasePrice = 25000m, Description = "El clásico: frijoles, arroz, chicharrón, carne molida, chorizo, huevo, plátano maduro y arepa.", ImageUrl = "img/paisa/bandeja-paisa.jpg" },
+            new PlatoTipico { Id = 2, Name = "Sancocho Antioqueño", BasePrice = 22000m, Description = "Sopa robusta con carne, papa, yuca, plátano y mazorca. ¡Perfecto para el alma!", ImageUrl = "img/paisa/sancocho.jpg" },
+            new PlatoTipico { Id = 3, Name = "Mondongo", BasePrice = 20000m, Description = "Tradicional sopa de callos con cerdo, chorizo y vegetales. Servido con arroz y aguacate.", ImageUrl = "img/paisa/mondongo.jpg" },
+            new PlatoTipico { Id = 4, Name = "Arepa con Todo", BasePrice = 15000m, Description = "Arepa de chócolo con mantequilla, quesito y rellena de carne desmechada y hogao.", ImageUrl = "img/paisa/arepa.jpg" },
+            new PlatoTipico { Id = 5, Name = "Empanadas Paisas (x5)", BasePrice = 10000m, Description = "Crujientes empanadas de papa y carne, acompañadas de ají casero.", ImageUrl = "img/paisa/empanadas.jpg" },
+            new PlatoTipico { Id = 6, Name = "Mazamorra", BasePrice = 8000m, Description = "Postre de maíz dulce con leche y panela rallada. ¡El final perfecto!", ImageUrl = "img/paisa/mazamorra.jpg" }
+        };
+    }
+}

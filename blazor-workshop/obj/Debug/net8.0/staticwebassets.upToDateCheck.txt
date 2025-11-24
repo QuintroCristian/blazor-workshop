@@ -1,5 +1,12 @@
 wwwroot\app.css
 wwwroot\bootstrap\bootstrap.min.css
 wwwroot\bootstrap\bootstrap.min.css.map
-wwwroot\favicon1.png
 wwwroot\favicontest.png
+wwwroot\img\bandeja.svg
+wwwroot\img\logo-paisa.svg
+wwwroot\img\paisa\arepa.jpg
+wwwroot\img\paisa\bandeja-paisa.jpg
+wwwroot\img\paisa\empanadas.jpg
+wwwroot\img\paisa\mazamorra.jpg
+wwwroot\img\paisa\mondongo.jpg
+wwwroot\img\paisa\sancocho.jpg

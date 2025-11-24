@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("blazor-workshop")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a9a2310a75db89394af15aa82a4d0e64204dacc5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+704a03df8831f86d5d6647fb7385b4506c0f80ca")]
 [assembly: System.Reflection.AssemblyProductAttribute("blazor-workshop")]
 [assembly: System.Reflection.AssemblyTitleAttribute("blazor-workshop")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
