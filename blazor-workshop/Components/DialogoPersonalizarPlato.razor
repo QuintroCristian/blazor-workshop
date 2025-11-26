@@ -1,0 +1,93 @@
+﻿@using blazor_workshop.Models
+
+@inject HttpClient HttpClient
+
+<div class="dialog-container">
+    <div class="dialog">
+        <div class="dialog-title">
+            <h2>@Plato.PlatoBase?.Name</h2>
+            <p>@Plato.PlatoBase?.Description</p>
+        </div>
+        <div class="dialog-body">
+            <div>
+                <label>Tamaño de la porción:</label>
+                <input type="range" min="1" max="3" @bind="Plato.Tamano" @bind:event="oninput" />
+                <span class="size-label">
+                    @(Plato.Tamano == 1 ? "Personal" : (Plato.Tamano == 2 ? "Doble" : "Para compartir")) (@Plato.GetFormattedTotalPrice())
+                </span>
+            </div>
+            <div>
+                <label>Adiciones:</label>
+                @if (adicionesDisponibles is null)
+                {
+                    <select class="custom-select" disabled><option>(cargando...)</option></select>
+                }
+                else
+                {
+                    <select class="custom-select" @onchange="AdicionSeleccionada">
+                        <option value="-1" disabled selected>(selecciona una adición)</option>
+                        @for (var i = 0; i < adicionesDisponibles.Count; i++)
+                        {
+                            <option value="@i">@adicionesDisponibles[i].Name (+ @adicionesDisponibles[i].GetFormattedPrice())</option>
+                        }
+                    </select>
+                }
+            </div>
+            <div class="toppings">
+                @foreach (var adicion in Plato.Adiciones)
+                {
+                    <div class="topping">
+                        @adicion.Name
+                        <span class="topping-price">@adicion.GetFormattedPrice()</span>
+                        <button type="button" class="delete-topping" @onclick="@(() => EliminarAdicion(adicion))">x</button>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="dialog-buttons">
+            <button class="btn btn-secondary mr-auto" @onclick="OnCancel">Cancelar</button>
+            <span class="mr-center">
+                Precio: <span class="price">@Plato.GetFormattedTotalPrice()</span>
+            </span>
+            <button class="btn btn-success ml-auto" @onclick="OnConfirm">Añadir al pedido</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Adicion>? adicionesDisponibles;
+
+    [Parameter, EditorRequired] public PlatoPersonalizado Plato { get; set; } = new();
+    [Parameter, EditorRequired] public EventCallback OnCancel { get; set; }
+    [Parameter, EditorRequired] public EventCallback OnConfirm { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulamos la carga de adiciones desde una API
+        await Task.Delay(100);
+        adicionesDisponibles = new List<Adicion>
+        {
+            new Adicion { Id = 1, Name = "Chicharrón extra", Price = 4500m },
+            new Adicion { Id = 2, Name = "Porción de aguacate", Price = 3000m },
+            new Adicion { Id = 3, Name = "Chorizo adicional", Price = 4000m },
+            new Adicion { Id = 4, Name = "Morcilla", Price = 4000m },
+            new Adicion { Id = 5, Name = "Hogao", Price = 2000m }
+        };
+    }
+
+    private void AdicionSeleccionada(ChangeEventArgs e)
+    {
+        if (int.TryParse((string?)e.Value, out var index) && index >= 0)
+        {
+            if (adicionesDisponibles is not null)
+            {
+                Plato.Adiciones.Add(adicionesDisponibles[index]);
+            }
+        }
+    }
+
+    private void EliminarAdicion(Adicion adicion)
+    {
+        Plato.Adiciones.Remove(adicion);
+    }
+}

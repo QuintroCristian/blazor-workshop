@@ -136,3 +136,175 @@ h1:focus {
         font-size: 1.1rem;
         font-weight: bold;
     }
+/* ... (tus estilos existentes) ... */
+
+/* Añade estos estilos al final del archivo */
+.main-container {
+    display: flex;
+}
+
+.main {
+    flex-grow: 1;
+}
+
+.sidebar {
+    width: 300px;
+    background-color: #f8f8f8;
+    border-left: 1px solid #ddd;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.empty-cart {
+    text-align: center;
+    color: #888;
+    margin: auto;
+}
+
+.order-contents {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.order-total {
+    border-top: 1px solid #ddd;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .order-total.hidden {
+        display: none;
+    }
+
+.total-price {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.cart-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+    position: relative;
+}
+
+    .cart-item .title {
+        font-weight: bold;
+    }
+
+    .cart-item ul {
+        padding-left: 20px;
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+    .cart-item .item-price {
+        text-align: right;
+        font-weight: bold;
+    }
+
+.delete-item {
+    position: absolute;
+    top: 0.5rem;
+    right: 0;
+    color: red;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0 5px;
+}
+
+/* Estilos para el diálogo */
+.dialog-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dialog {
+    background-color: white;
+    width: 600px;
+    max-width: 90%;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.dialog-title {
+    background-color: #a22502;
+    color: white;
+    padding: 1rem;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+    .dialog-title h2 {
+        margin: 0;
+    }
+
+.dialog-body {
+    padding: 1rem;
+    flex-grow: 1;
+}
+
+    .dialog-body label {
+        font-weight: bold;
+    }
+
+.dialog-buttons {
+    padding: 1rem;
+    border-top: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+}
+
+.mr-auto {
+    margin-right: auto;
+}
+
+.ml-auto {
+    margin-left: auto;
+}
+
+.mr-center {
+    margin: 0 auto;
+}
+
+.size-label {
+    margin-left: 0.5rem;
+}
+
+.toppings {
+    margin-top: 1rem;
+}
+
+.topping {
+    background-color: #f0f0f0;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin: 0.25rem;
+}
+
+.topping-price {
+    font-size: 0.8rem;
+    color: #666;
+    margin-left: 0.5rem;
+}
+
+.delete-topping {
+    background: none;
+    border: none;
+    color: red;
+    cursor: pointer;
+    font-weight: bold;
+}
