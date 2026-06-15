@@ -1,0 +1,181 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+@using blazor_workshop.Models
+
+
+<PageTitle>Comida Paisa</PageTitle>
+
+<div class="main-container">
+    <div class="main">
+        <h1>Nuestro Menú Paisa</h1>
+        <ul class="pizza-cards">
+            @if (platos is not null)
+            {
+                @foreach (var plato in platos)
+                {
+                    <li @onclick="@(() => MostrarDialogoPersonalizar(plato))" style="background-image: url('@plato.ImageUrl')">
+                        <div class="pizza-info">
+                            <span class="title">@plato.Name</span>
+                            @plato.Description
+                            <span class="price">@plato.GetFormattedBasePrice()</span>
+                        </div>
+                    </li>
+                }
+            }
+            else
+            {
+                <p>Cargando menú...</p>
+            }
+        </ul>
+    </div>
+
+    <div class="sidebar">
+        @if (pedido.Platos.Any())
+        {
+            <div class="order-contents">
+                <h2>Tu pedido</h2>
+                @foreach (var platoConfigurado in pedido.Platos)
+                {
+                    <div class="cart-item">
+                        <a @onclick="@(() => EliminarPlatoDelPedido(platoConfigurado))" class="delete-item">x</a>
+                        <div class="title">@platoConfigurado.PlatoBase?.Name (@(platoConfigurado.Tamano == 1 ? "Personal" : (platoConfigurado.Tamano == 2 ? "Doble" : "Para compartir")))</div>
+                        <ul>
+                            @foreach (var adicion in platoConfigurado.Adiciones)
+                            {
+                                <li>+ @adicion.Name</li>
+                            }
+                        </ul>
+                        <div class="item-price">
+                            @platoConfigurado.GetFormattedTotalPrice()
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-cart">Elige un plato<br>para empezar</div>
+        }
+
+        <div class="order-total @(pedido.Platos.Any() ? "" : "hidden")">
+            Total:
+            <span class="total-price">@pedido.GetFormattedTotalPrice()</span>
+            <button class="btn btn-warning" disabled="@(pedido.Platos.Count == 0)" @onclick="RealizarPedido">
+                Ordenar >
+            </button>
+        </div>
+    </div>
+</div>
+
+
+@if (mostrandoDialogo)
+{
+    <DialogoPersonalizarPlato Plato="platoEnConfiguracion!"
+                              OnCancel="CancelarPersonalizacion"
+                              OnConfirm="ConfirmarPersonalizacion" />
+}
+
+
+@code {
+    private List<PlatoTipico>? platos;
+    private Pedido pedido = new();
+    private PlatoPersonalizado? platoEnConfiguracion;
+    private bool mostrandoDialogo = false;
+
+    // // --- Clases del Modelo ---
+    // public class PlatoTipico
+    // {
+    //     public int Id { get; set; }
+    //     public string Name { get; set; } = string.Empty;
+    //     public decimal BasePrice { get; set; }
+    //     public string Description { get; set; } = string.Empty;
+    //     public string ImageUrl { get; set; } = string.Empty;
+    //     public string GetFormattedBasePrice() => $"${BasePrice:N0}";
+    // }
+
+    // public class Adicion
+    // {
+    //     public int Id { get; set; }
+    //     public string Name { get; set; } = string.Empty;
+    //     public decimal Price { get; set; }
+    //     public string GetFormattedPrice() => $"${Price:N0}";
+    // }
+
+    // public class PlatoPersonalizado
+    // {
+    //     public PlatoTipico? PlatoBase { get; set; }
+    //     public int Tamano { get; set; } = 1; // 1: Personal, 2: Doble, 3: Para compartir
+    //     public List<Adicion> Adiciones { get; set; } = new();
+
+    //     public decimal GetTotalPrice()
+    //     {
+    //         var precioTotal = (PlatoBase?.BasePrice ?? 0) * Tamano;
+    //         precioTotal += Adiciones.Sum(a => a.Price);
+    //         return precioTotal;
+    //     }
+    //     public string GetFormattedTotalPrice() => $"${GetTotalPrice():N0}";
+    // }
+
+    // public class Pedido
+    // {
+    //     public List<PlatoPersonalizado> Platos { get; set; } = new();
+    //     public decimal GetTotalPrice() => Platos.Sum(p => p.GetTotalPrice());
+    //     public string GetFormattedTotalPrice() => $"${GetTotalPrice():N0}";
+    // }
+    // // --- Fin Clases del Modelo ---
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(200);
+        platos = new List<PlatoTipico>
+        {
+            new PlatoTipico { Id = 1, Name = "Bandeja Paisa", BasePrice = 25000m, Description = "El clásico: frijoles, arroz, chicharrón, carne molida, chorizo, huevo, plátano maduro y arepa.", ImageUrl = "img/paisa/bandeja-paisa.jpg" },
+            new PlatoTipico { Id = 2, Name = "Sancocho Antioqueño", BasePrice = 22000m, Description = "Sopa robusta con carne, papa, yuca, plátano y mazorca. ¡Perfecto para el alma!", ImageUrl = "img/paisa/sancocho.jpg" },
+            new PlatoTipico { Id = 3, Name = "Mondongo", BasePrice = 20000m, Description = "Tradicional sopa de callos con cerdo, chorizo y vegetales. Servido con arroz y aguacate.", ImageUrl = "img/paisa/mondongo.jpg" },
+            new PlatoTipico { Id = 4, Name = "Arepa con Todo", BasePrice = 15000m, Description = "Arepa de chócolo con mantequilla, quesito y rellena de carne desmechada y hogao.", ImageUrl = "img/paisa/arepa.jpg" },
+            new PlatoTipico { Id = 5, Name = "Empanadas Paisas (x5)", BasePrice = 10000m, Description = "Crujientes empanadas de papa y carne, acompañadas de ají casero.", ImageUrl = "img/paisa/empanadas.jpg" },
+            new PlatoTipico { Id = 6, Name = "Mazamorra", BasePrice = 8000m, Description = "Postre de maíz dulce con leche y panela rallada. ¡El final perfecto!", ImageUrl = "img/paisa/mazamorra.jpg" }
+        };
+    }
+
+    private void MostrarDialogoPersonalizar(PlatoTipico plato)
+    {
+        platoEnConfiguracion = new PlatoPersonalizado
+        {
+            PlatoBase = plato,
+            Tamano = 1,
+            Adiciones = new List<Adicion>()
+        };
+        mostrandoDialogo = true;
+    }
+
+    private void CancelarPersonalizacion()
+    {
+        platoEnConfiguracion = null;
+        mostrandoDialogo = false;
+    }
+
+    private void ConfirmarPersonalizacion()
+    {
+        if (platoEnConfiguracion is not null)
+        {
+            pedido.Platos.Add(platoEnConfiguracion);
+        }
+        platoEnConfiguracion = null;
+        mostrandoDialogo = false;
+    }
+
+    private void EliminarPlatoDelPedido(PlatoPersonalizado plato)
+    {
+        pedido.Platos.Remove(plato);
+    }
+
+    private async Task RealizarPedido()
+    {
+        // Aquí iría la lógica para enviar el pedido al servidor.
+        // await HttpClient.PostAsJsonAsync("pedidos", pedido);
+        Console.WriteLine("¡Pedido realizado!");
+        pedido = new Pedido(); // Limpia el pedido actual
+    }
+}
